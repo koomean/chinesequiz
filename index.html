@@ -1,364 +1,45 @@
 <!doctype html>
 <html lang="th">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ติวจีน บท 3–4 | 20 ข้อ/รอบ</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ติวจีน บท 3–4 | Quiz</title>
 <style>
-:root {
-  --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085;
-  --primary:#4f46e5; --primary2:#eef2ff; --ok:#15803d; --okbg:#f0fdf4;
-  --bad:#b42318; --badbg:#fef2f2; --border:#e4e7ec; --shadow:0 12px 34px rgba(16,24,40,.08);
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Thai",sans-serif}
-.wrap{max-width:980px;margin:auto;padding:24px 16px 40px}
-h1{font-size:clamp(26px,5vw,40px);margin:0 0 8px}
-.lead{color:var(--muted);line-height:1.7;margin-bottom:18px}
-.topbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-button{font:inherit}
-.btn{border:1px solid var(--border);background:#fff;border-radius:12px;padding:11px 14px;cursor:pointer}
-.btn:hover{border-color:#a5b4fc}
-.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
-.stats{display:none;gap:8px;flex-wrap:wrap;margin:12px 0}
-.pill{background:#fff;border:1px solid var(--border);border-radius:999px;padding:7px 10px;font-size:14px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);padding:24px}
-.mode{font-weight:800;color:var(--primary);font-size:14px;margin-bottom:8px}
-.progress{height:9px;background:#eef0f4;border-radius:99px;overflow:hidden;margin:8px 0 18px}
-.progress > div{height:100%;width:0;background:var(--primary);transition:.2s}
-.question{font-size:clamp(22px,4vw,32px);font-weight:850;line-height:1.35;margin:10px 0}.question .pinyin{font-weight:500}
-.sub{color:var(--muted);margin-bottom:18px;line-height:1.6}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.choice{border:1px solid var(--border);background:#fff;border-radius:14px;padding:16px;text-align:left;cursor:pointer;min-height:68px;line-height:1.45}
-.choice:hover{background:#fafaff;border-color:#a5b4fc}
-.choice:disabled{cursor:default}
-.choice.correct{background:var(--okbg);border-color:#86efac}
-.choice.wrong{background:var(--badbg);border-color:#fca5a5}
-.feedback{display:none;margin-top:16px;padding:14px;border-radius:14px;line-height:1.7}
-.feedback.show{display:block}
-.feedback.ok{background:var(--okbg);color:var(--ok)}
-.feedback.no{background:var(--badbg);color:var(--bad)}
-.next{display:none;width:100%;margin-top:14px}
-.next.show{display:block}
-.result{display:none;margin-top:16px;text-align:center}
-.result.show{display:block}
-.score-big{font-size:52px;font-weight:900;margin:8px 0}
-.mini{color:var(--muted);line-height:1.7}
-.breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
-.break{border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;background:#fafafa}
-.break b{display:block;font-size:24px}
-.note{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.7}
-@media(max-width:700px){.choices{grid-template-columns:1fr}.card{padding:18px}.breakdown{grid-template-columns:1fr}}
-
-.pinyin{color:var(--muted);font-size:14px;margin-top:4px;line-height:1.45}
-.choice .choice-zh{font-size:20px;font-weight:800}
-.choice .choice-py{color:var(--muted);font-size:13px;margin-top:3px}
-
-</style>
-</head>
-<body>
-<div class="wrap">
-  <h1>🧠 ตะลุยข้อสอบจีน บท 3–4</h1>
-  <div class="lead">
-    คลังโจทย์ <b>178 ข้อ</b> จากแนวข้อสอบและเนื้อหาที่ส่งมา
-    แต่ละรอบจะสุ่ม <b>20 ข้อ</b> และพยายามไม่ซ้ำกับรอบก่อนหน้า
-    โดยคละแนว <b>ไทย → จีน</b>, <b>จีน → ไทย</b>, เติมคำ, เรียงประโยค และไวยากรณ์
-  </div>
-
-  <div class="topbar">
-    <button class="btn primary" id="newRound">🎲 สุ่มชุดใหม่ 20 ข้อ</button>
-    <button class="btn" id="retryWrong">🔁 ทบทวนข้อที่พลาด</button>
-    <button class="btn" id="resetHistory">ล้างประวัติการสุ่ม</button>
-  </div>
-
-  <div class="stats" id="stats">
-    <span class="pill" id="countPill"></span>
-    <span class="pill" id="scorePill"></span>
-    <span class="pill" id="streakPill"></span>
-  </div>
-
-  <div class="card" id="quizCard">
-    <div class="mode" id="mode">กำลังเตรียมข้อสอบ...</div>
-    <div class="progress"><div id="progressBar"></div></div>
-    <div class="question" id="question"></div>
-    <div class="sub" id="sub"></div>
-    <div class="choices" id="choices"></div>
-    <div class="feedback" id="feedback"></div>
-    <button class="btn primary next" id="nextBtn">ข้อถัดไป →</button>
-  </div>
-
-  <div class="card result" id="result">
-    <div class="mode">ทำครบ 20 ข้อแล้ว 🎉</div>
-    <div class="score-big" id="finalScore">0 / 20</div>
-    <div id="finalMsg" class="mini"></div>
-    <div class="breakdown">
-      <div class="break"><b id="correctCount">0</b>ถูก</div>
-      <div class="break"><b id="wrongCount">0</b>ผิด</div>
-      <div class="break"><b id="pctCount">0%</b>เปอร์เซ็นต์</div>
-    </div>
-    <button class="btn primary" id="nextRoundBtn">🎲 ทำชุดใหม่อีก 20 ข้อ</button>
-    <div class="note">ชุดใหม่จะสุ่มจากคลังโจทย์ทั้งหมด และเก็บประวัติรอบล่าสุดไว้เพื่อหลีกเลี่ยงการซ้ำแบบเดิมทันที</div>
-  </div>
-
-  <div class="note">
-    เนื้อหายึดตามบท 3–4 และตัวอย่างข้อสอบที่แนบมา เช่น 会 / 不会 / 会不会,
-    一点儿也, 想 / 不想, 吃 / 喝, 的, 口渴, คำศัพท์รสชาติ และกริยาคู่กับกิจกรรมกีฬา
-  </div>
+:root{--bg:#f6f7fb;--card:#fff;--text:#182033;--muted:#667085;--accent:#4f46e5;--ok:#15803d;--bad:#b42318;--border:#e5e7eb}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text)}
+.wrap{max-width:900px;margin:auto;padding:24px}h1{font-size:clamp(25px,5vw,38px);margin:0 0 8px}.sub{color:var(--muted);line-height:1.6}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.btn{font:inherit;border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.status{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:12px 0}.pill{padding:7px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(16,24,40,.06)}.mode{color:var(--accent);font-weight:700;font-size:14px;margin-bottom:8px}.q{font-size:clamp(26px,6vw,42px);font-weight:800;margin:8px 0;line-height:1.25}.py{color:var(--muted);font-size:16px;margin-bottom:18px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice{text-align:left;border:1px solid var(--border);background:#fff;border-radius:14px;padding:16px;cursor:pointer;min-height:64px}.choice:hover{border-color:#a5b4fc}.choice.correct{border-color:#86efac;background:#f0fdf4}.choice.wrong{border-color:#fca5a5;background:#fef2f2}
+.feedback{margin-top:16px;padding:14px;border-radius:12px;display:none;line-height:1.6}.feedback.show{display:block}.feedback.ok{background:#f0fdf4;color:var(--ok)}.feedback.no{background:#fef2f2;color:var(--bad)}.next{margin-top:16px;width:100%;display:none}.next.show{display:block}
+.result{display:none;text-align:center}.result.show{display:block}.bigscore{font-size:48px;font-weight:900;margin:10px 0}.footer{margin-top:16px;color:var(--muted);font-size:13px;line-height:1.6}
+@media(max-width:650px){.choices{grid-template-columns:1fr}.card{padding:18px}}
+</style></head>
+<body><div class="wrap">
+<h1>🧠 ตะลุยข้อสอบจีน บท 3–4</h1>
+<div class="sub">สลับรูปแบบอัตโนมัติ: <b>ไทย → เลือกจีน</b> แล้ว <b>จีน → เลือกไทย</b> ไปทีละข้อ พร้อมเฉลยและคะแนน</div>
+<div class="toolbar"><button class="btn primary" onclick="start(20)">เริ่ม 20 ข้อ</button><button class="btn" onclick="start(BANK.length)">เล่นครบทุกคำ</button><button class="btn" onclick="start(modeCount)">สุ่มใหม่</button></div>
+<div id="status" class="status" style="display:none"><span class="pill" id="counter"></span><span class="pill" id="score"></span><span class="pill" id="streak"></span></div>
+<section id="quiz" class="card" style="display:none"><div id="mode" class="mode"></div><div id="question" class="q"></div><div id="promptPy" class="py"></div><div id="choices" class="choices"></div><div id="feedback" class="feedback"></div><button id="next" class="btn primary next">ข้อถัดไป →</button></section>
+<section id="result" class="card result"><div class="mode">จบแล้ว 🎉</div><div id="finalScore" class="bigscore"></div><div id="finalText"></div><button class="btn primary" style="margin-top:18px" onclick="start(modeCount)">เล่นอีกครั้ง</button></section>
+<div class="footer">อิงคำศัพท์และรูปแบบโจทย์จากไฟล์บท 3–4 และตัวอย่างข้อสอบที่ส่งมา เช่น 会, 游泳, 运动, 打, 足球, 羽毛球, 想, 不想, 吃, 喝, 饼干, 口渴, 甜的, 辣的, 酸的, 苦的, 油腻的 และ 的</div>
 </div>
-
 <script>
-const BANK = [{"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เป็น / สามารถ", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["知道", "羽毛球", "会", "饼干"], "answer": "会", "explain": "会 — huì — เป็น / สามารถ", "py": "huì", "id": "Q001"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "会", "sub": "Pinyin: huì", "choices": ["เป็น / สามารถ", "บาสเกตบอล", "เล่นสเกตน้ำแข็ง", "ดูหนัง"], "answer": "เป็น / สามารถ", "explain": "会 — huì — เป็น / สามารถ", "py": "huì", "id": "Q002"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ว่ายน้ำ", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["喝", "看电影", "游泳", "芭蕾舞"], "answer": "游泳", "explain": "游泳 — yóuyǒng — ว่ายน้ำ", "py": "yóuyǒng", "id": "Q003"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "游泳", "sub": "Pinyin: yóuyǒng", "choices": ["เปรี้ยว / ของเปรี้ยว", "เล่นสกี", "ว่ายน้ำ", "เล่นเปียโน"], "answer": "ว่ายน้ำ", "explain": "游泳 — yóuyǒng — ว่ายน้ำ", "py": "yóuyǒng", "id": "Q004"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "นิดหน่อย", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["吃", "弹钢琴", "芭蕾舞", "一点儿"], "answer": "一点儿", "explain": "一点儿 — yìdiǎnr — นิดหน่อย", "py": "yìdiǎnr", "id": "Q005"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "一点儿", "sub": "Pinyin: yìdiǎnr", "choices": ["ขับรถ", "นิดหน่อย", "ว่ายน้ำ", "บาสเกตบอล"], "answer": "นิดหน่อย", "explain": "一点儿 — yìdiǎnr — นิดหน่อย", "py": "yìdiǎnr", "id": "Q006"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ก็ / ด้วย", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["也", "听音乐", "游泳", "油腻的"], "answer": "也", "explain": "也 — yě — ก็ / ด้วย", "py": "yě", "id": "Q007"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "也", "sub": "Pinyin: yě", "choices": ["เล่นสเกตน้ำแข็ง", "บาสเกตบอล", "ฟังเพลง", "ก็ / ด้วย"], "answer": "ก็ / ด้วย", "explain": "也 — yě — ก็ / ด้วย", "py": "yě", "id": "Q008"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "งั้น / ถ้างั้น", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["不想", "酸的", "那", "想"], "answer": "那", "explain": "那 — nà — งั้น / ถ้างั้น", "py": "nà", "id": "Q009"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "那", "sub": "Pinyin: nà", "choices": ["เทนนิส", "งั้น / ถ้างั้น", "เล่นสเกตน้ำแข็ง", "ของ... / แสดงความเป็นเจ้าของ"], "answer": "งั้น / ถ้างั้น", "explain": "那 — nà — งั้น / ถ้างั้น", "py": "nà", "id": "Q010"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "กีฬา", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["牛奶", "听音乐", "运动", "那"], "answer": "运动", "explain": "运动 — yùndòng — กีฬา", "py": "yùndòng", "id": "Q011"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "运动", "sub": "Pinyin: yùndòng", "choices": ["กระโดด / เต้น", "รู้", "เล่นสเกตน้ำแข็ง", "กีฬา"], "answer": "กีฬา", "explain": "运动 — yùndòng — กีฬา", "py": "yùndòng", "id": "Q012"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เล่น / ตี", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["游泳", "油腻的", "网球", "打"], "answer": "打", "explain": "打 — dǎ — เล่น / ตี", "py": "dǎ", "id": "Q013"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "打", "sub": "Pinyin: dǎ", "choices": ["ขม / ของขม", "เล่น / ตี", "กระโดด / เต้น", "งั้น / ถ้างั้น"], "answer": "เล่น / ตี", "explain": "打 — dǎ — เล่น / ตี", "py": "dǎ", "id": "Q014"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "บาสเกตบอล", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["那", "篮球", "游泳", "也"], "answer": "篮球", "explain": "篮球 — lánqiú — บาสเกตบอล", "py": "lánqiú", "id": "Q015"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "篮球", "sub": "Pinyin: lánqiú", "choices": ["บาสเกตบอล", "อยาก", "เล่นเปียโน", "ฟุตบอล"], "answer": "บาสเกตบอล", "explain": "篮球 — lánqiú — บาสเกตบอล", "py": "lánqiú", "id": "Q016"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เทนนิส", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["看电影", "足球", "网球", "口渴"], "answer": "网球", "explain": "网球 — wǎngqiú — เทนนิส", "py": "wǎngqiú", "id": "Q017"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "网球", "sub": "Pinyin: wǎngqiú", "choices": ["ทำอาหาร", "ขม / ของขม", "เทนนิส", "เบสบอล"], "answer": "เทนนิส", "explain": "网球 — wǎngqiú — เทนนิส", "py": "wǎngqiú", "id": "Q018"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เบสบอล", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["芭蕾舞", "吃", "棒球", "排球"], "answer": "棒球", "explain": "棒球 — bàngqiú — เบสบอล", "py": "bàngqiú", "id": "Q019"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "棒球", "sub": "Pinyin: bàngqiú", "choices": ["เบสบอล", "เปรี้ยว / ของเปรี้ยว", "ดื่ม", "โคล่า"], "answer": "เบสบอล", "explain": "棒球 — bàngqiú — เบสบอล", "py": "bàngqiú", "id": "Q020"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "วอลเลย์บอล", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["排球", "弹钢琴", "乒乓球", "日语"], "answer": "排球", "explain": "排球 — páiqiú — วอลเลย์บอล", "py": "páiqiú", "id": "Q021"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "排球", "sub": "Pinyin: páiqiú", "choices": ["บัลเลต์", "ดื่ม", "อยาก", "วอลเลย์บอล"], "answer": "วอลเลย์บอล", "explain": "排球 — páiqiú — วอลเลย์บอล", "py": "páiqiú", "id": "Q022"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ฟุตบอล", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["酸的", "饼干", "跳", "足球"], "answer": "足球", "explain": "足球 — zúqiú — ฟุตบอล", "py": "zúqiú", "id": "Q023"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "足球", "sub": "Pinyin: zúqiú", "choices": ["ฟังเพลง", "เป็น / สามารถ", "เบสบอล", "ฟุตบอล"], "answer": "ฟุตบอล", "explain": "足球 — zúqiú — ฟุตบอล", "py": "zúqiú", "id": "Q024"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ปิงปอง", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["那", "弹钢琴", "一点儿", "乒乓球"], "answer": "乒乓球", "explain": "乒乓球 — pīngpāng qiú — ปิงปอง", "py": "pīngpāng qiú", "id": "Q025"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "乒乓球", "sub": "Pinyin: pīngpāng qiú", "choices": ["กิน", "ปิงปอง", "ของ... / แสดงความเป็นเจ้าของ", "อยาก"], "answer": "ปิงปอง", "explain": "乒乓球 — pīngpāng qiú — ปิงปอง", "py": "pīngpāng qiú", "id": "Q026"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "แบดมินตัน", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["吃", "羽毛球", "会", "棒球"], "answer": "羽毛球", "explain": "羽毛球 — yǔmáoqiú — แบดมินตัน", "py": "yǔmáoqiú", "id": "Q027"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "羽毛球", "sub": "Pinyin: yǔmáoqiú", "choices": ["ดูหนัง", "เล่นสเกตน้ำแข็ง", "แบดมินตัน", "กิน"], "answer": "แบดมินตัน", "explain": "羽毛球 — yǔmáoqiú — แบดมินตัน", "py": "yǔmáoqiú", "id": "Q028"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เล่นสกี", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["滑雪", "口渴", "弹钢琴", "苦的"], "answer": "滑雪", "explain": "滑雪 — huáxuě — เล่นสกี", "py": "huáxuě", "id": "Q029"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "滑雪", "sub": "Pinyin: huáxuě", "choices": ["เล่นเปียโน", "เล่นสกี", "บาสเกตบอล", "เผ็ด / ของเผ็ด"], "answer": "เล่นสกี", "explain": "滑雪 — huáxuě — เล่นสกี", "py": "huáxuě", "id": "Q030"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เล่นสเกตน้ำแข็ง", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["喝", "弹钢琴", "滑冰", "打"], "answer": "滑冰", "explain": "滑冰 — huábīng — เล่นสเกตน้ำแข็ง", "py": "huábīng", "id": "Q031"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "滑冰", "sub": "Pinyin: huábīng", "choices": ["เผ็ด / ของเผ็ด", "ขม / ของขม", "ว่ายน้ำ", "เล่นสเกตน้ำแข็ง"], "answer": "เล่นสเกตน้ำแข็ง", "explain": "滑冰 — huábīng — เล่นสเกตน้ำแข็ง", "py": "huábīng", "id": "Q032"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เล่นเปียโน", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["吃", "棒球", "弹钢琴", "也"], "answer": "弹钢琴", "explain": "弹钢琴 — tán gāngqín — เล่นเปียโน", "py": "tán gāngqín", "id": "Q033"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "弹钢琴", "sub": "Pinyin: tán gāngqín", "choices": ["ของ... / แสดงความเป็นเจ้าของ", "เล่นเปียโน", "เปรี้ยว / ของเปรี้ยว", "กระหายน้ำ"], "answer": "เล่นเปียโน", "explain": "弹钢琴 — tán gāngqín — เล่นเปียโน", "py": "tán gāngqín", "id": "Q034"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ภาษาญี่ปุ่น", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["看电影", "喝", "日语", "足球"], "answer": "日语", "explain": "日语 — rìyǔ — ภาษาญี่ปุ่น", "py": "rìyǔ", "id": "Q035"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "日语", "sub": "Pinyin: rìyǔ", "choices": ["มัน / เลี่ยน", "ภาษาญี่ปุ่น", "อยาก", "เผ็ด / ของเผ็ด"], "answer": "ภาษาญี่ปุ่น", "explain": "日语 — rìyǔ — ภาษาญี่ปุ่น", "py": "rìyǔ", "id": "Q036"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "กระโดด / เต้น", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["一点儿", "跳", "喝", "好吃"], "answer": "跳", "explain": "跳 — tiào — กระโดด / เต้น", "py": "tiào", "id": "Q037"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "跳", "sub": "Pinyin: tiào", "choices": ["ฟุตบอล", "มัน / เลี่ยน", "เทนนิส", "กระโดด / เต้น"], "answer": "กระโดด / เต้น", "explain": "跳 — tiào — กระโดด / เต้น", "py": "tiào", "id": "Q038"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "บัลเลต์", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["弹钢琴", "运动", "辣的", "芭蕾舞"], "answer": "芭蕾舞", "explain": "芭蕾舞 — bālěiwǔ — บัลเลต์", "py": "bālěiwǔ", "id": "Q039"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "芭蕾舞", "sub": "Pinyin: bālěiwǔ", "choices": ["บัลเลต์", "โคล่า", "นม", "ไม่อยาก"], "answer": "บัลเลต์", "explain": "芭蕾舞 — bālěiwǔ — บัลเลต์", "py": "bālěiwǔ", "id": "Q040"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ขับรถ", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["开车", "牛奶", "弹钢琴", "那"], "answer": "开车", "explain": "开车 — kāichē — ขับรถ", "py": "kāichē", "id": "Q041"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "开车", "sub": "Pinyin: kāichē", "choices": ["กีฬา", "ขับรถ", "เทนนิส", "กิน"], "answer": "ขับรถ", "explain": "开车 — kāichē — ขับรถ", "py": "kāichē", "id": "Q042"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "อร่อย", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["日语", "吃", "好吃", "跳"], "answer": "好吃", "explain": "好吃 — hǎochī — อร่อย", "py": "hǎochī", "id": "Q043"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "好吃", "sub": "Pinyin: hǎochī", "choices": ["ฟังเพลง", "อร่อย", "เผ็ด / ของเผ็ด", "เทนนิส"], "answer": "อร่อย", "explain": "好吃 — hǎochī — อร่อย", "py": "hǎochī", "id": "Q044"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ทำอาหาร", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["不想", "听音乐", "做菜", "甜的"], "answer": "做菜", "explain": "做菜 — zuò cài — ทำอาหาร", "py": "zuò cài", "id": "Q045"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "做菜", "sub": "Pinyin: zuò cài", "choices": ["แบดมินตัน", "อร่อย", "ทำอาหาร", "ฟุตบอล"], "answer": "ทำอาหาร", "explain": "做菜 — zuò cài — ทำอาหาร", "py": "zuò cài", "id": "Q046"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "รู้", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["好吃", "足球", "一点儿", "知道"], "answer": "知道", "explain": "知道 — zhīdào — รู้", "py": "zhīdào", "id": "Q047"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "知道", "sub": "Pinyin: zhīdào", "choices": ["บัลเลต์", "รู้", "อยาก", "ภาษาญี่ปุ่น"], "answer": "รู้", "explain": "知道 — zhīdào — รู้", "py": "zhīdào", "id": "Q048"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "อยาก", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["想", "酸的", "乒乓球", "开车"], "answer": "想", "explain": "想 — xiǎng — อยาก", "py": "xiǎng", "id": "Q049"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "想", "sub": "Pinyin: xiǎng", "choices": ["บาสเกตบอล", "ฟังเพลง", "อยาก", "นม"], "answer": "อยาก", "explain": "想 — xiǎng — อยาก", "py": "xiǎng", "id": "Q050"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ไม่อยาก", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["不想", "的", "那", "排球"], "answer": "不想", "explain": "不想 — bù xiǎng — ไม่อยาก", "py": "bù xiǎng", "id": "Q051"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "不想", "sub": "Pinyin: bù xiǎng", "choices": ["ไม่อยาก", "กีฬา", "เปรี้ยว / ของเปรี้ยว", "บาสเกตบอล"], "answer": "ไม่อยาก", "explain": "不想 — bù xiǎng — ไม่อยาก", "py": "bù xiǎng", "id": "Q052"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "กิน", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["吃", "排球", "日语", "开车"], "answer": "吃", "explain": "吃 — chī — กิน", "py": "chī", "id": "Q053"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "吃", "sub": "Pinyin: chī", "choices": ["อร่อย", "โคล่า", "กิน", "นิดหน่อย"], "answer": "กิน", "explain": "吃 — chī — กิน", "py": "chī", "id": "Q054"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ดื่ม", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["喝", "辣的", "篮球", "酸的"], "answer": "喝", "explain": "喝 — hē — ดื่ม", "py": "hē", "id": "Q055"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "喝", "sub": "Pinyin: hē", "choices": ["ขม / ของขม", "ดื่ม", "เป็น / สามารถ", "กระหายน้ำ"], "answer": "ดื่ม", "explain": "喝 — hē — ดื่ม", "py": "hē", "id": "Q056"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "โคล่า", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["可乐", "听音乐", "滑冰", "饼干"], "answer": "可乐", "explain": "可乐 — kělè — โคล่า", "py": "kělè", "id": "Q057"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "可乐", "sub": "Pinyin: kělè", "choices": ["โคล่า", "วอลเลย์บอล", "กิน", "อร่อย"], "answer": "โคล่า", "explain": "可乐 — kělè — โคล่า", "py": "kělè", "id": "Q058"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "คุกกี้", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["饼干", "会", "游泳", "也"], "answer": "饼干", "explain": "饼干 — bǐnggān — คุกกี้", "py": "bǐnggān", "id": "Q059"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "饼干", "sub": "Pinyin: bǐnggān", "choices": ["ว่ายน้ำ", "ขม / ของขม", "เบสบอล", "คุกกี้"], "answer": "คุกกี้", "explain": "饼干 — bǐnggān — คุกกี้", "py": "bǐnggān", "id": "Q060"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "นม", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["牛奶", "不想", "甜的", "听音乐"], "answer": "牛奶", "explain": "牛奶 — niúnǎi — นม", "py": "niúnǎi", "id": "Q061"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "牛奶", "sub": "Pinyin: niúnǎi", "choices": ["นม", "แบดมินตัน", "ดูหนัง", "อยาก"], "answer": "นม", "explain": "牛奶 — niúnǎi — นม", "py": "niúnǎi", "id": "Q062"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ดูหนัง", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["一点儿", "看电影", "做菜", "棒球"], "answer": "看电影", "explain": "看电影 — kàn diànyǐng — ดูหนัง", "py": "kàn diànyǐng", "id": "Q063"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "看电影", "sub": "Pinyin: kàn diànyǐng", "choices": ["กระหายน้ำ", "บัลเลต์", "ฟุตบอล", "ดูหนัง"], "answer": "ดูหนัง", "explain": "看电影 — kàn diànyǐng — ดูหนัง", "py": "kàn diànyǐng", "id": "Q064"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ฟังเพลง", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["饼干", "运动", "听音乐", "好吃"], "answer": "听音乐", "explain": "听音乐 — tīng yīnyuè — ฟังเพลง", "py": "tīng yīnyuè", "id": "Q065"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "听音乐", "sub": "Pinyin: tīng yīnyuè", "choices": ["เทนนิส", "ฟังเพลง", "เล่นเปียโน", "กิน"], "answer": "ฟังเพลง", "explain": "听音乐 — tīng yīnyuè — ฟังเพลง", "py": "tīng yīnyuè", "id": "Q066"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "กระหายน้ำ", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["口渴", "牛奶", "想", "也"], "answer": "口渴", "explain": "口渴 — kǒu kě — กระหายน้ำ", "py": "kǒu kě", "id": "Q067"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "口渴", "sub": "Pinyin: kǒu kě", "choices": ["อร่อย", "เป็น / สามารถ", "เทนนิส", "กระหายน้ำ"], "answer": "กระหายน้ำ", "explain": "口渴 — kǒu kě — กระหายน้ำ", "py": "kǒu kě", "id": "Q068"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "หวาน / ของหวาน", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["甜的", "苦的", "游泳", "口渴"], "answer": "甜的", "explain": "甜的 — tián de — หวาน / ของหวาน", "py": "tián de", "id": "Q069"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "甜的", "sub": "Pinyin: tián de", "choices": ["เป็น / สามารถ", "เปรี้ยว / ของเปรี้ยว", "มัน / เลี่ยน", "หวาน / ของหวาน"], "answer": "หวาน / ของหวาน", "explain": "甜的 — tián de — หวาน / ของหวาน", "py": "tián de", "id": "Q070"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เผ็ด / ของเผ็ด", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["的", "跳", "辣的", "日语"], "answer": "辣的", "explain": "辣的 — là de — เผ็ด / ของเผ็ด", "py": "là de", "id": "Q071"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "辣的", "sub": "Pinyin: là de", "choices": ["เล่นสกี", "กีฬา", "เปรี้ยว / ของเปรี้ยว", "เผ็ด / ของเผ็ด"], "answer": "เผ็ด / ของเผ็ด", "explain": "辣的 — là de — เผ็ด / ของเผ็ด", "py": "là de", "id": "Q072"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "เปรี้ยว / ของเปรี้ยว", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["日语", "乒乓球", "酸的", "可乐"], "answer": "酸的", "explain": "酸的 — suān de — เปรี้ยว / ของเปรี้ยว", "py": "suān de", "id": "Q073"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "酸的", "sub": "Pinyin: suān de", "choices": ["แบดมินตัน", "รู้", "บัลเลต์", "เปรี้ยว / ของเปรี้ยว"], "answer": "เปรี้ยว / ของเปรี้ยว", "explain": "酸的 — suān de — เปรี้ยว / ของเปรี้ยว", "py": "suān de", "id": "Q074"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ขม / ของขม", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["听音乐", "苦的", "运动", "看电影"], "answer": "苦的", "explain": "苦的 — kǔ de — ขม / ของขม", "py": "kǔ de", "id": "Q075"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "苦的", "sub": "Pinyin: kǔ de", "choices": ["อร่อย", "กิน", "ขม / ของขม", "บัลเลต์"], "answer": "ขม / ของขม", "explain": "苦的 — kǔ de — ขม / ของขม", "py": "kǔ de", "id": "Q076"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "มัน / เลี่ยน", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["酸的", "芭蕾舞", "油腻的", "知道"], "answer": "油腻的", "explain": "油腻的 — yóunì de — มัน / เลี่ยน", "py": "yóunì de", "id": "Q077"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "油腻的", "sub": "Pinyin: yóunì de", "choices": ["กระหายน้ำ", "ปิงปอง", "งั้น / ถ้างั้น", "มัน / เลี่ยน"], "answer": "มัน / เลี่ยน", "explain": "油腻的 — yóunì de — มัน / เลี่ยน", "py": "yóunì de", "id": "Q078"}, {"type": "vocab-th-zh", "chapter": "บท 3–4", "q": "ของ... / แสดงความเป็นเจ้าของ", "sub": "เลือกคำภาษาจีนที่ตรงกับความหมาย", "choices": ["足球", "网球", "做菜", "的"], "answer": "的", "explain": "的 — de — ของ... / แสดงความเป็นเจ้าของ", "py": "de", "id": "Q079"}, {"type": "vocab-zh-th", "chapter": "บท 3–4", "q": "的", "sub": "Pinyin: de", "choices": ["ของ... / แสดงความเป็นเจ้าของ", "ฟุตบอล", "ก็ / ด้วย", "ไม่อยาก"], "answer": "ของ... / แสดงความเป็นเจ้าของ", "explain": "的 — de — ของ... / แสดงความเป็นเจ้าของ", "py": "de", "id": "Q080"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นบาสเกตบอล", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["打篮球", "跳芭蕾舞", "打排球", "滑雪"], "answer": "打篮球", "explain": "打篮球 — dǎ lánqiú — เล่นบาสเกตบอล", "py": "dǎ lánqiú", "id": "Q081"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "打篮球", "sub": "Pinyin: dǎ lánqiú", "choices": ["นี่คือของแม่ฉัน", "คุณเล่นกีฬาอะไรเป็น?", "คุณว่ายน้ำเป็นไหม?", "เล่นบาสเกตบอล"], "answer": "เล่นบาสเกตบอล", "explain": "打篮球 — dǎ lánqiú — เล่นบาสเกตบอล", "py": "dǎ lánqiú", "id": "Q082"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นเทนนิส", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["打篮球", "滑冰", "打网球", "打乒乓球"], "answer": "打网球", "explain": "打网球 — dǎ wǎngqiú — เล่นเทนนิส", "py": "dǎ wǎngqiú", "id": "Q083"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "打网球", "sub": "Pinyin: dǎ wǎngqiú", "choices": ["ฉันกระหายน้ำ", "ฉันไม่อยากกินของหวาน", "นี่คือของใคร?", "เล่นเทนนิส"], "answer": "เล่นเทนนิส", "explain": "打网球 — dǎ wǎngqiú — เล่นเทนนิส", "py": "dǎ wǎngqiú", "id": "Q084"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นเบสบอล", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["打棒球", "打篮球", "打乒乓球", "跳芭蕾舞"], "answer": "打棒球", "explain": "打棒球 — dǎ bàngqiú — เล่นเบสบอล", "py": "dǎ bàngqiú", "id": "Q085"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "打棒球", "sub": "Pinyin: dǎ bàngqiú", "choices": ["ฉันทำอาหารไม่เป็นเลย", "เล่นเบสบอล", "คุณเล่นกีฬาอะไรเป็น?", "คุณว่ายน้ำเป็นไหม?"], "answer": "เล่นเบสบอล", "explain": "打棒球 — dǎ bàngqiú — เล่นเบสบอล", "py": "dǎ bàngqiú", "id": "Q086"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นวอลเลย์บอล", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["踢足球", "弹钢琴", "打排球", "滑冰"], "answer": "打排球", "explain": "打排球 — dǎ páiqiú — เล่นวอลเลย์บอล", "py": "dǎ páiqiú", "id": "Q087"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "打排球", "sub": "Pinyin: dǎ páiqiú", "choices": ["คุณว่ายน้ำเป็นไหม?", "ไม่อร่อยเลย", "ฉันเล่นบาสเป็น", "เล่นวอลเลย์บอล"], "answer": "เล่นวอลเลย์บอล", "explain": "打排球 — dǎ páiqiú — เล่นวอลเลย์บอล", "py": "dǎ páiqiú", "id": "Q088"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นปิงปอง", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["弹钢琴", "打乒乓球", "跳芭蕾舞", "打羽毛球"], "answer": "打乒乓球", "explain": "打乒乓球 — dǎ pīngpāng qiú — เล่นปิงปอง", "py": "dǎ pīngpāng qiú", "id": "Q089"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "打乒乓球", "sub": "Pinyin: dǎ pīngpāng qiú", "choices": ["คุณว่ายน้ำเป็นไหม?", "ฉันทำอาหารไม่เป็นเลย", "เล่นปิงปอง", "ฉันอยากฟังเพลง"], "answer": "เล่นปิงปอง", "explain": "打乒乓球 — dǎ pīngpāng qiú — เล่นปิงปอง", "py": "dǎ pīngpāng qiú", "id": "Q090"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นแบดมินตัน", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["打排球", "打羽毛球", "打乒乓球", "滑冰"], "answer": "打羽毛球", "explain": "打羽毛球 — dǎ yǔmáoqiú — เล่นแบดมินตัน", "py": "dǎ yǔmáoqiú", "id": "Q091"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "打羽毛球", "sub": "Pinyin: dǎ yǔmáoqiú", "choices": ["คุณเล่นกีฬาอะไรเป็น?", "ฉันทำอาหารไม่เป็นเลย", "เล่นแบดมินตัน", "นี่คือของฉัน"], "answer": "เล่นแบดมินตัน", "explain": "打羽毛球 — dǎ yǔmáoqiú — เล่นแบดมินตัน", "py": "dǎ yǔmáoqiú", "id": "Q092"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นฟุตบอล", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["踢足球", "打乒乓球", "打棒球", "打篮球"], "answer": "踢足球", "explain": "踢足球 — tī zúqiú — เล่นฟุตบอล", "py": "tī zúqiú", "id": "Q093"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "踢足球", "sub": "Pinyin: tī zúqiú", "choices": ["คุณเล่นกีฬาอะไรเป็น?", "เล่นฟุตบอล", "ไม่รู้เลย", "ฉันอยากดื่มโคล่า"], "answer": "เล่นฟุตบอล", "explain": "踢足球 — tī zúqiú — เล่นฟุตบอล", "py": "tī zúqiú", "id": "Q094"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นเปียโน", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["弹钢琴", "打棒球", "跳芭蕾舞", "踢足球"], "answer": "弹钢琴", "explain": "弹钢琴 — tán gāngqín — เล่นเปียโน", "py": "tán gāngqín", "id": "Q095"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "弹钢琴", "sub": "Pinyin: tán gāngqín", "choices": ["ฉันเล่นบาสเป็น", "เล่นเปียโน", "ไม่รู้เลย", "คุณว่ายน้ำเป็นไหม?"], "answer": "เล่นเปียโน", "explain": "弹钢琴 — tán gāngqín — เล่นเปียโน", "py": "tán gāngqín", "id": "Q096"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เต้นบัลเลต์", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["跳芭蕾舞", "滑冰", "打乒乓球", "打篮球"], "answer": "跳芭蕾舞", "explain": "跳芭蕾舞 — tiào bālěiwǔ — เต้นบัลเลต์", "py": "tiào bālěiwǔ", "id": "Q097"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "跳芭蕾舞", "sub": "Pinyin: tiào bālěiwǔ", "choices": ["ฉันอยากดื่มโคล่า", "ฉันไม่อยากกินคุกกี้", "ฉันอยากฟังเพลง", "เต้นบัลเลต์"], "answer": "เต้นบัลเลต์", "explain": "跳芭蕾舞 — tiào bālěiwǔ — เต้นบัลเลต์", "py": "tiào bālěiwǔ", "id": "Q098"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นสกี", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["滑雪", "打棒球", "弹钢琴", "滑冰"], "answer": "滑雪", "explain": "滑雪 — huáxuě — เล่นสกี", "py": "huáxuě", "id": "Q099"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "滑雪", "sub": "Pinyin: huáxuě", "choices": ["ฉันเล่นบาสเป็น", "ไม่รู้เลย", "ฉันอยากดื่มโคล่า", "เล่นสกี"], "answer": "เล่นสกี", "explain": "滑雪 — huáxuě — เล่นสกี", "py": "huáxuě", "id": "Q100"}, {"type": "activity-th-zh", "chapter": "บท 3", "q": "เล่นสเกตน้ำแข็ง", "sub": "เลือกคำ/วลีภาษาจีนที่ตรงกับกิจกรรม", "choices": ["滑冰", "打羽毛球", "打排球", "打棒球"], "answer": "滑冰", "explain": "滑冰 — huábīng — เล่นสเกตน้ำแข็ง", "py": "huábīng", "id": "Q101"}, {"type": "activity-zh-th", "chapter": "บท 3", "q": "滑冰", "sub": "Pinyin: huábīng", "choices": ["เล่นสเกตน้ำแข็ง", "คุณว่ายน้ำเป็นไหม?", "ฉันเล่นบาสเป็น", "ไม่รู้เลย"], "answer": "เล่นสเกตน้ำแข็ง", "explain": "滑冰 — huábīng — เล่นสเกตน้ำแข็ง", "py": "huábīng", "id": "Q102"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "一点儿也不会", "sub": "Pinyin: yìdiǎnr yě bú huì", "choices": ["คุณว่ายน้ำเป็นไหม?", "ไม่เป็นเลย", "นี่คือของฉัน", "ไม่รู้เลย"], "answer": "ไม่เป็นเลย", "explain": "一点儿也不会 — yìdiǎnr yě bú huì — ไม่เป็นเลย", "py": "yìdiǎnr yě bú huì", "id": "Q103"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "一点儿也不知道", "sub": "Pinyin: yìdiǎnr yě bù zhīdào", "choices": ["คุณเล่นกีฬาอะไรเป็น?", "ฉันอยากดื่มนม", "นี่คือของแม่ฉัน", "ไม่รู้เลย"], "answer": "ไม่รู้เลย", "explain": "一点儿也不知道 — yìdiǎnr yě bù zhīdào — ไม่รู้เลย", "py": "yìdiǎnr yě bù zhīdào", "id": "Q104"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "一点儿也不好吃", "sub": "Pinyin: yìdiǎnr yě bù hǎochī", "choices": ["ฉันอยากฟังเพลง", "ฉันไม่อยากกินคุกกี้", "ฉันทำอาหารไม่เป็นเลย", "ไม่อร่อยเลย"], "answer": "ไม่อร่อยเลย", "explain": "一点儿也不好吃 — yìdiǎnr yě bù hǎochī — ไม่อร่อยเลย", "py": "yìdiǎnr yě bù hǎochī", "id": "Q105"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "你会游泳吗？", "sub": "Pinyin: Nǐ huì yóuyǒng ma?", "choices": ["คุณว่ายน้ำเป็นไหม?", "ฉันอยากดื่มนม", "ไม่รู้เลย", "ฉันเล่นบาสเป็น"], "answer": "คุณว่ายน้ำเป็นไหม?", "explain": "你会游泳吗？ — Nǐ huì yóuyǒng ma? — คุณว่ายน้ำเป็นไหม?", "py": "Nǐ huì yóuyǒng ma?", "id": "Q106"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "你会不会游泳？", "sub": "Pinyin: Nǐ huì bú huì yóuyǒng?", "choices": ["คุณเล่นกีฬาอะไรเป็น?", "นี่คือของแม่ฉัน", "ฉันอยากดื่มนม", "คุณว่ายน้ำเป็นไหม?"], "answer": "คุณว่ายน้ำเป็นไหม?", "explain": "你会不会游泳？ — Nǐ huì bú huì yóuyǒng? — คุณว่ายน้ำเป็นไหม?", "py": "Nǐ huì bú huì yóuyǒng?", "id": "Q107"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "你会什么运动？", "sub": "Pinyin: Nǐ huì shénme yùndòng?", "choices": ["คุณเล่นกีฬาอะไรเป็น?", "ฉันอยากดื่มโคล่า", "ฉันไม่อยากกินของหวาน", "นี่คือของใคร?"], "answer": "คุณเล่นกีฬาอะไรเป็น?", "explain": "你会什么运动？ — Nǐ huì shénme yùndòng? — คุณเล่นกีฬาอะไรเป็น?", "py": "Nǐ huì shénme yùndòng?", "id": "Q108"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "那你会什么运动？", "sub": "Pinyin: Nà nǐ huì shénme yùndòng?", "choices": ["งั้นคุณเล่นกีฬาอะไรเป็น?", "ไม่รู้เลย", "คุณว่ายน้ำเป็นไหม?", "คุณเล่นกีฬาอะไรเป็น?"], "answer": "งั้นคุณเล่นกีฬาอะไรเป็น?", "explain": "那你会什么运动？ — Nà nǐ huì shénme yùndòng? — งั้นคุณเล่นกีฬาอะไรเป็น?", "py": "Nà nǐ huì shénme yùndòng?", "id": "Q109"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "我会打篮球。", "sub": "Pinyin: Wǒ huì dǎ lánqiú.", "choices": ["คุณเล่นกีฬาอะไรเป็น?", "ฉันไม่อยากกินของหวาน", "ฉันเล่นบาสเป็น", "ไม่อร่อยเลย"], "answer": "ฉันเล่นบาสเป็น", "explain": "我会打篮球。 — Wǒ huì dǎ lánqiú. — ฉันเล่นบาสเป็น", "py": "Wǒ huì dǎ lánqiú.", "id": "Q110"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "我一点儿也不会做饭。", "sub": "Pinyin: Wǒ yìdiǎnr yě bú huì zuòfàn.", "choices": ["ฉันทำอาหารไม่เป็นเลย", "คุณว่ายน้ำเป็นไหม?", "คุณว่ายน้ำเป็นไหม?", "งั้นคุณเล่นกีฬาอะไรเป็น?"], "answer": "ฉันทำอาหารไม่เป็นเลย", "explain": "我一点儿也不会做饭。 — Wǒ yìdiǎnr yě bú huì zuòfàn. — ฉันทำอาหารไม่เป็นเลย", "py": "Wǒ yìdiǎnr yě bú huì zuòfàn.", "id": "Q111"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "我想喝可乐。", "sub": "Pinyin: Wǒ xiǎng hē kělè.", "choices": ["ฉันอยากดื่มโคล่า", "คุณว่ายน้ำเป็นไหม?", "นี่คือของใคร?", "ฉันอยากฟังเพลง"], "answer": "ฉันอยากดื่มโคล่า", "explain": "我想喝可乐。 — Wǒ xiǎng hē kělè. — ฉันอยากดื่มโคล่า", "py": "Wǒ xiǎng hē kělè.", "id": "Q112"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "我想喝牛奶。", "sub": "Pinyin: Wǒ xiǎng hē niúnǎi.", "choices": ["ฉันอยากดื่มโคล่า", "นี่คือของฉัน", "ฉันอยากดื่มนม", "ไม่อร่อยเลย"], "answer": "ฉันอยากดื่มนม", "explain": "我想喝牛奶。 — Wǒ xiǎng hē niúnǎi. — ฉันอยากดื่มนม", "py": "Wǒ xiǎng hē niúnǎi.", "id": "Q113"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "我想听音乐。", "sub": "Pinyin: Wǒ xiǎng tīng yīnyuè.", "choices": ["คุณว่ายน้ำเป็นไหม?", "ฉันทำอาหารไม่เป็นเลย", "นี่คือของฉัน", "ฉันอยากฟังเพลง"], "answer": "ฉันอยากฟังเพลง", "explain": "我想听音乐。 — Wǒ xiǎng tīng yīnyuè. — ฉันอยากฟังเพลง", "py": "Wǒ xiǎng tīng yīnyuè.", "id": "Q114"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "我不想吃饼干。", "sub": "Pinyin: Wǒ bù xiǎng chī bǐnggān.", "choices": ["นี่คือของใคร?", "นี่คือของฉัน", "ฉันไม่อยากกินคุกกี้", "นี่คือของแม่ฉัน"], "answer": "ฉันไม่อยากกินคุกกี้", "explain": "我不想吃饼干。 — Wǒ bù xiǎng chī bǐnggān. — ฉันไม่อยากกินคุกกี้", "py": "Wǒ bù xiǎng chī bǐnggān.", "id": "Q115"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "我不想吃甜的。", "sub": "Pinyin: Wǒ bù xiǎng chī tián de.", "choices": ["งั้นคุณเล่นกีฬาอะไรเป็น?", "คุณเล่นกีฬาอะไรเป็น?", "คุณว่ายน้ำเป็นไหม?", "ฉันไม่อยากกินของหวาน"], "answer": "ฉันไม่อยากกินของหวาน", "explain": "我不想吃甜的。 — Wǒ bù xiǎng chī tián de. — ฉันไม่อยากกินของหวาน", "py": "Wǒ bù xiǎng chī tián de.", "id": "Q116"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "这是谁的？", "sub": "Pinyin: Zhè shì shéi de?", "choices": ["นี่คือของใคร?", "ไม่เป็นเลย", "คุณว่ายน้ำเป็นไหม?", "คุณเล่นกีฬาอะไรเป็น?"], "answer": "นี่คือของใคร?", "explain": "这是谁的？ — Zhè shì shéi de? — นี่คือของใคร?", "py": "Zhè shì shéi de?", "id": "Q117"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "这是我的。", "sub": "Pinyin: Zhè shì wǒ de.", "choices": ["ไม่อร่อยเลย", "นี่คือของฉัน", "คุณว่ายน้ำเป็นไหม?", "ฉันอยากดื่มนม"], "answer": "นี่คือของฉัน", "explain": "这是我的。 — Zhè shì wǒ de. — นี่คือของฉัน", "py": "Zhè shì wǒ de.", "id": "Q118"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "这是我妈妈的。", "sub": "Pinyin: Zhè shì wǒ māma de.", "choices": ["ฉันไม่อยากกินคุกกี้", "ฉันทำอาหารไม่เป็นเลย", "นี่คือของแม่ฉัน", "ฉันอยากดื่มโคล่า"], "answer": "นี่คือของแม่ฉัน", "explain": "这是我妈妈的。 — Zhè shì wǒ māma de. — นี่คือของแม่ฉัน", "py": "Zhè shì wǒ māma de.", "id": "Q119"}, {"type": "phrase-zh-th", "chapter": "บท 3–4", "q": "我口渴。", "sub": "Pinyin: Wǒ kǒu kě.", "choices": ["คุณเล่นกีฬาอะไรเป็น?", "ฉันอยากฟังเพลง", "งั้นคุณเล่นกีฬาอะไรเป็น?", "ฉันกระหายน้ำ"], "answer": "ฉันกระหายน้ำ", "explain": "我口渴。 — Wǒ kǒu kě. — ฉันกระหายน้ำ", "py": "Wǒ kǒu kě.", "id": "Q120"}, {"type": "grammar", "chapter": "บท 3", "q": "我喜欢 ____ 足球。", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["打", "踢", "弹", "跳"], "answer": "踢", "explain": "足球 ใช้คู่กับ 踢 → 踢足球", "id": "Q121"}, {"type": "grammar", "chapter": "บท 3", "q": "我会 ____ 篮球。", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["打", "踢", "弹", "喝"], "answer": "打", "explain": "篮球 ใช้คู่กับ 打 → 打篮球", "id": "Q122"}, {"type": "grammar", "chapter": "บท 3", "q": "____ 钢琴", "sub": "เติมคำให้ถูกต้อง", "choices": ["打", "踢", "弹", "跳"], "answer": "弹", "explain": "弹钢琴 = เล่นเปียโน", "id": "Q123"}, {"type": "grammar", "chapter": "บท 3", "q": "____ 芭蕾舞", "sub": "เติมคำให้ถูกต้อง", "choices": ["打", "踢", "弹", "跳"], "answer": "跳", "explain": "跳芭蕾舞 = เต้นบัลเลต์", "id": "Q124"}, {"type": "grammar", "chapter": "บท 4", "q": "我想 ____ 可乐。", "sub": "เติมคำให้ถูกต้อง", "choices": ["吃", "喝", "踢", "弹"], "answer": "喝", "explain": "可乐 เป็นเครื่องดื่ม จึงใช้ 喝", "id": "Q125"}, {"type": "grammar", "chapter": "บท 4", "q": "我想 ____ 饼干。", "sub": "เติมคำให้ถูกต้อง", "choices": ["吃", "喝", "踢", "跳"], "answer": "吃", "explain": "饼干 เป็นอาหาร จึงใช้ 吃", "id": "Q126"}, {"type": "grammar", "chapter": "บท 4", "q": "我 ____ 看电影。", "sub": "เติมคำให้ถูกต้อง", "choices": ["想", "不想", "会", "不会"], "answer": "不想", "explain": "ข้อนี้ให้รูปความหมาย 'ฉันไม่อยากดูหนัง' → 不想", "id": "Q127"}, {"type": "grammar", "chapter": "บท 4", "q": "我 ____ 喝牛奶。", "sub": "เติมคำให้ถูกต้อง", "choices": ["想", "不想", "会", "不会"], "answer": "想", "explain": "想 + กริยา = อยากทำ...", "id": "Q128"}, {"type": "grammar", "chapter": "บท 3", "q": "我 ____ 游泳。", "sub": "เติมคำให้ถูกต้อง", "choices": ["会", "不会", "想", "不想"], "answer": "不会", "explain": "不会 = ไม่เป็น / ไม่สามารถ", "id": "Q129"}, {"type": "grammar", "chapter": "บท 3", "q": "我 ____ 打篮球。", "sub": "เติมคำให้ถูกต้อง", "choices": ["会", "不会", "不想", "想"], "answer": "会", "explain": "会 + กริยา = ทำ/เป็นได้", "id": "Q130"}, {"type": "grammar", "chapter": "บท 4", "q": "想", "sub": "เลือกคำที่เป็นรูปปฏิเสธของ 想", "choices": ["不想", "不会", "不吃", "不好吃"], "answer": "不想", "explain": "想 → 不想 = อยาก → ไม่อยาก", "id": "Q131"}, {"type": "grammar", "chapter": "บท 4", "q": "口渴", "sub": "เลือกคำที่ตรงกับ 'กระหายน้ำ'", "choices": ["好吃", "口渴", "知道", "运动"], "answer": "口渴", "explain": "口渴 = กระหายน้ำ", "id": "Q132"}, {"type": "grammar", "chapter": "บท 4", "q": "油腻的", "sub": "เลือกคำที่ตรงกับ 'ของมัน / เลี่ยน'", "choices": ["酸的", "苦的", "油腻的", "辣的"], "answer": "油腻的", "explain": "油腻的 = มัน / เลี่ยน", "id": "Q133"}, {"type": "grammar", "chapter": "บท 4", "q": "酸的", "sub": "เลือกคำที่ตรงกับ 'เปรี้ยว'", "choices": ["甜的", "酸的", "苦的", "辣的"], "answer": "酸的", "explain": "酸的 = เปรี้ยว", "id": "Q134"}, {"type": "grammar", "chapter": "บท 4", "q": "苦的", "sub": "เลือกคำที่ตรงกับ 'ขม'", "choices": ["苦的", "甜的", "酸的", "油腻的"], "answer": "苦的", "explain": "苦的 = ขม", "id": "Q135"}, {"type": "grammar", "chapter": "บท 4", "q": "辣的", "sub": "เลือกคำที่ตรงกับ 'เผ็ด'", "choices": ["甜的", "辣的", "酸的", "苦的"], "answer": "辣的", "explain": "辣的 = เผ็ด", "id": "Q136"}, {"type": "grammar", "chapter": "บท 4", "q": "甜的", "sub": "เลือกคำที่ตรงกับ 'หวาน'", "choices": ["甜的", "辣的", "酸的", "苦的"], "answer": "甜的", "explain": "甜的 = หวาน / ของหวาน", "id": "Q137"}, {"type": "grammar", "chapter": "บท 3", "q": "ข้อใดเป็นประโยคคำถามแบบ A-not-A ที่ถูกต้อง?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["你会不会游泳？", "你会不会游泳吗？", "你不会会游泳？", "你会游泳不会？"], "answer": "你会不会游泳？", "explain": "A-not-A ใช้ 会不会 และไม่ใส่ 吗 ท้ายประโยค", "id": "Q138"}, {"type": "grammar", "chapter": "บท 3", "q": "ข้อใดแปลว่า 'คุณร้องเพลงจีนเป็นไหม?'", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["你会不会唱中文歌？", "你不想唱中文歌？", "你会唱歌不会吗？", "你一点儿也会唱中文歌？"], "answer": "你会不会唱中文歌？", "explain": "会不会 + กริยา = ถามว่าเป็น/ทำได้ไหม", "id": "Q139"}, {"type": "grammar", "chapter": "บท 3", "q": "ข้อใดใช้ 一点儿也 ได้ถูกต้อง?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["我一点儿也不会做饭。", "我一点儿不会也做饭。", "我会一点儿也做饭。", "一点儿我也不会做饭吗？"], "answer": "我一点儿也不会做饭。", "explain": "一点儿也 + ปฏิเสธ = ไม่...เลย", "id": "Q140"}, {"type": "grammar", "chapter": "บท 3", "q": "ข้อใดแปลว่า 'ไม่รู้เลย'", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["一点儿也不知道", "一点儿也会知道", "不会一点儿知道", "不想知道一点儿也"], "answer": "一点儿也不知道", "explain": "一点儿也 + 不知道 = ไม่รู้เลย", "id": "Q141"}, {"type": "grammar", "chapter": "บท 3", "q": "ข้อใดแปลว่า 'ไม่อร่อยเลย'", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["一点儿也不好吃", "一点儿也好吃", "不好吃一点儿也", "一点儿不好吃也"], "answer": "一点儿也不好吃", "explain": "一点儿也 + 不好吃 = ไม่อร่อยเลย", "id": "Q142"}, {"type": "ownership", "chapter": "บท 4", "q": "“这是谁的？” หมายถึงอะไร?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["นี่คือของใคร?", "นี่คือของฉัน", "นี่คือของแม่ฉัน", "คุณว่ายน้ำเป็นไหม?"], "answer": "นี่คือของใคร?", "explain": "谁的 = ของใคร", "id": "Q143"}, {"type": "ownership", "chapter": "บท 4", "q": "เติมคำให้สมบูรณ์: 这是我的 ____。", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["的", "吗", "也", "会"], "answer": "的", "explain": "ข้อนี้เป็นรูปแสดงความเป็นเจ้าของ", "id": "Q144"}, {"type": "ownership", "chapter": "บท 4", "q": "ตอบคำถาม “这是谁的？” ว่า “นี่คือของฉัน”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["这是我的。", "这是我会。", "这是我想。", "这是我的不。"], "answer": "这是我的。", "explain": "我的 = ของฉัน", "id": "Q145"}, {"type": "ownership", "chapter": "บท 4", "q": "ตอบคำถาม “这是谁的？” ว่า “นี่คือของแม่ฉัน”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["这是我妈妈的。", "这是妈妈我会。", "这是我的妈妈不。", "这是我妈妈吗。"], "answer": "这是我妈妈的。", "explain": "我妈妈的 = ของแม่ฉัน", "id": "Q146"}, {"type": "ownership", "chapter": "บท 4", "q": "เรียงคำให้ถูกต้อง", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["这是我的。", "的这是我。", "我这是的。", "这是我的？"], "answer": "这是我的。", "explain": "โครงสร้าง: 这是 + เจ้าของ + 的", "id": "Q147"}, {"type": "ownership", "chapter": "บท 4", "q": "เรียงคำให้ถูกต้อง", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["这是我妈妈的。", "我妈妈这是的。", "这是的我妈妈。", "我这是妈妈的。"], "answer": "这是我妈妈的。", "explain": "โครงสร้าง: 这是 + 我妈妈 + 的", "id": "Q148"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาจีน: “คุณว่ายน้ำเป็นไหม?”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["你会游泳吗？\nNǐ huì yóuyǒng ma?", "你不会游泳。\nNǐ bú huì yóuyǒng.", "我会打篮球。\nWǒ huì dǎ lánqiú.", "你想喝可乐吗？\nNǐ xiǎng hē kělè ma?"], "answer": "你会游泳吗？\nNǐ huì yóuyǒng ma?", "explain": "你会游泳吗？ = คุณว่ายน้ำเป็นไหม?", "id": "Q149"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาไทย: “我一点儿也不会做饭。”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["ฉันทำอาหารไม่เป็นเลย", "ฉันอยากทำอาหาร", "ฉันเล่นบาสเป็น", "ฉันไม่ชอบของหวาน"], "answer": "ฉันทำอาหารไม่เป็นเลย", "explain": "一点儿也不会 = ไม่เป็นเลย", "id": "Q150"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาจีน: “ฉันอยากฟังเพลง”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["我想听音乐。\nWǒ xiǎng tīng yīnyuè.", "我不想吃饼干。\nWǒ bù xiǎng chī bǐnggān.", "我会打篮球。\nWǒ huì dǎ lánqiú.", "我想喝牛奶。\nWǒ xiǎng hē niúnǎi."], "answer": "我想听音乐。\nWǒ xiǎng tīng yīnyuè.", "explain": "想 + 听音乐 = อยากฟังเพลง", "id": "Q151"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาไทย: “我想喝牛奶。”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["ฉันอยากดื่มนม", "ฉันไม่อยากกินคุกกี้", "ฉันอยากดูหนัง", "ฉันกระหายน้ำ"], "answer": "ฉันอยากดื่มนม", "explain": "我想喝牛奶 = ฉันอยากดื่มนม", "id": "Q152"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาจีน: “ฉันไม่อยากกินคุกกี้”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["我不想吃饼干。\nWǒ bù xiǎng chī bǐnggān.", "我想吃甜的。\nWǒ xiǎng chī tián de.", "我一点儿也不会做饭。\nWǒ yìdiǎnr yě bú huì zuòfàn.", "我想喝可乐。\nWǒ xiǎng hē kělè."], "answer": "我不想吃饼干。\nWǒ bù xiǎng chī bǐnggān.", "explain": "不想 + 吃饼干 = ไม่อยากกินคุกกี้", "id": "Q153"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาไทย: “那你喜欢什么运动？”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["งั้นคุณเล่นกีฬาอะไรเป็น?", "คุณว่ายน้ำเป็นไหม?", "ฉันเล่นบาสเป็น", "ฉันอยากดื่มโคล่า"], "answer": "งั้นคุณเล่นกีฬาอะไรเป็น?", "explain": "那你会什么运动？ ในบทมีความหมายใกล้เคียงกับ งั้นคุณเล่นกีฬาอะไรเป็น?", "id": "Q154"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาจีน: “นี่คือของฉัน”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["这是我的。\nZhè shì wǒ de.", "这是谁的？\nZhè shì shéi de?", "这是我妈妈的。\nZhè shì wǒ māma de.", "我口渴。\nWǒ kǒu kě."], "answer": "这是我的。\nZhè shì wǒ de.", "explain": "这是我的 = นี่คือของฉัน", "id": "Q155"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาจีน: “ฉันไม่อยากดูหนัง”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["我不想看电影。\nWǒ bù xiǎng kàn diànyǐng.", "我想看电影。\nWǒ xiǎng kàn diànyǐng.", "我不会看电影。\nWǒ bú huì kàn diànyǐng.", "我不想听音乐。\nWǒ bù xiǎng tīng yīnyuè."], "answer": "我不想看电影。\nWǒ bù xiǎng kàn diànyǐng.", "explain": "不想 + 看电影 = ไม่อยากดูหนัง", "id": "Q156"}, {"type": "translation", "chapter": "บท 3–4", "q": "แปลเป็นภาษาไทย: “口渴”", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["กระหายน้ำ", "อร่อย", "กีฬา", "รู้"], "answer": "กระหายน้ำ", "explain": "口渴 = กระหายน้ำ", "id": "Q157"}, {"type": "ordering", "chapter": "บท 3–4", "q": "เรียงคำ: 唱 / 你 / 会 / 歌 / 不 / 会 / 中文 / ？", "sub": "เลือกประโยคที่เรียงถูกต้อง", "choices": ["你会不会唱中文歌？", "你唱中文会不会歌？", "会你不会唱中文歌？", "你不会会唱中文歌？"], "answer": "你会不会唱中文歌？", "explain": "โครงสร้าง A-not-A: 你 + 会不会 + 唱中文歌", "id": "Q158"}, {"type": "ordering", "chapter": "บท 3–4", "q": "เรียงคำ: 的 / 这是 / 妈妈 / 我 / 。", "sub": "เลือกประโยคที่เรียงถูกต้อง", "choices": ["这是我妈妈的。", "这是妈妈我。的", "我这是妈妈的。", "这是的我妈妈。"], "answer": "这是我妈妈的。", "explain": "这是 + 我妈妈 + 的", "id": "Q159"}, {"type": "ordering", "chapter": "บท 3–4", "q": "เรียงคำ: 喜欢 / 甜的 / 吃 / 我 / 不 / 。", "sub": "เลือกประโยคที่เรียงถูกต้อง", "choices": ["我不喜欢吃甜的。", "我喜欢不吃甜的。", "甜的我不喜欢吃。", "我不吃喜欢甜的。"], "answer": "我不喜欢吃甜的。", "explain": "我 + 不喜欢 + 吃 + 甜的", "id": "Q160"}, {"type": "ordering", "chapter": "บท 3–4", "q": "เรียงคำ: 想 / 我 / 可乐 / 喝 / 。", "sub": "เลือกประโยคที่เรียงถูกต้อง", "choices": ["我想喝可乐。", "我喝想可乐。", "想我喝可乐。", "我可乐想喝。"], "answer": "我想喝可乐。", "explain": "我 + 想 + 喝 + 可乐", "id": "Q161"}, {"type": "ordering", "chapter": "บท 3–4", "q": "เรียงคำ: 我 / 一点儿 / 也 / 不 / 知道 / 。", "sub": "เลือกประโยคที่เรียงถูกต้อง", "choices": ["我一点儿也不知道。", "我不知道一点儿也。", "一点儿我也不知道。", "我也一点儿不知道不。"], "answer": "我一点儿也不知道。", "explain": "一点儿也 + 不知道", "id": "Q162"}, {"type": "variation", "chapter": "บท 3", "q": "เติมคำ: 你 ____ 什么运动？", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["会", "想", "不想", "喝"], "answer": "会", "explain": "你会什么运动？ = คุณเล่นกีฬาอะไรเป็น?", "id": "Q163"}, {"type": "variation", "chapter": "บท 3", "q": "เติมคำ: 那你 ____ 什么运动？", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["会", "喝", "吃", "不想"], "answer": "会", "explain": "那你会什么运动？ = งั้นคุณเล่นกีฬาอะไรเป็น?", "id": "Q164"}, {"type": "variation", "chapter": "บท 3", "q": "เติมคำ: 我 ____ 打篮球。", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["会", "不想", "喝", "不知道"], "answer": "会", "explain": "我会打篮球 = ฉันเล่นบาสเป็น", "id": "Q165"}, {"type": "variation", "chapter": "บท 3", "q": "เติมคำ: 一点儿也 ____。", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["不会", "会", "想", "喝"], "answer": "不会", "explain": "一点儿也不会 = ไม่เป็นเลย", "id": "Q166"}, {"type": "variation", "chapter": "บท 3", "q": "คำใดตรงกับ 'ภาษาญี่ปุ่น'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["日语", "运动", "知道", "篮球"], "answer": "日语", "explain": "日语 = ภาษาญี่ปุ่น", "id": "Q167"}, {"type": "variation", "chapter": "บท 3", "q": "คำใดตรงกับ 'ขับรถ'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["开车", "做菜", "游泳", "跳"], "answer": "开车", "explain": "开车 = ขับรถ", "id": "Q168"}, {"type": "variation", "chapter": "บท 3", "q": "คำใดตรงกับ 'ทำอาหาร'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["做菜", "开车", "滑雪", "喝"], "answer": "做菜", "explain": "做菜 = ทำอาหาร", "id": "Q169"}, {"type": "variation", "chapter": "บท 3", "q": "คำใดตรงกับ 'อร่อย'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["好吃", "口渴", "甜的", "知道"], "answer": "好吃", "explain": "好吃 = อร่อย", "id": "Q170"}, {"type": "variation", "chapter": "บท 3", "q": "คำใดตรงกับ 'รู้'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["知道", "好吃", "那", "一点儿"], "answer": "知道", "explain": "知道 = รู้", "id": "Q171"}, {"type": "variation", "chapter": "บท 4", "q": "คำใดตรงกับ 'อยาก'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["想", "不想", "会", "不会"], "answer": "想", "explain": "想 = อยาก", "id": "Q172"}, {"type": "variation", "chapter": "บท 4", "q": "คำใดตรงกับ 'ไม่อยาก'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["不想", "想", "不会", "不吃"], "answer": "不想", "explain": "不想 = ไม่อยาก", "id": "Q173"}, {"type": "variation", "chapter": "บท 4", "q": "คำใดตรงกับ 'คุกกี้'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["饼干", "牛奶", "可乐", "巧克力"], "answer": "饼干", "explain": "饼干 = คุกกี้", "id": "Q174"}, {"type": "variation", "chapter": "บท 4", "q": "คำใดตรงกับ 'นม'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["牛奶", "饼干", "可乐", "篮球"], "answer": "牛奶", "explain": "牛奶 = นม", "id": "Q175"}, {"type": "variation", "chapter": "บท 4", "q": "คำใดตรงกับ 'โคล่า'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["可乐", "牛奶", "饼干", "口渴"], "answer": "可乐", "explain": "可乐 = โคล่า", "id": "Q176"}, {"type": "variation", "chapter": "บท 4", "q": "คำใดตรงกับ 'ฟังเพลง'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["听音乐", "看电影", "喝牛奶", "打篮球"], "answer": "听音乐", "explain": "听音乐 = ฟังเพลง", "id": "Q177"}, {"type": "variation", "chapter": "บท 4", "q": "คำใดตรงกับ 'ดูหนัง'?", "sub": "เลือกคำตอบที่ถูกต้อง", "choices": ["看电影", "听音乐", "吃饼干", "喝可乐"], "answer": "看电影", "explain": "看电影 = ดูหนัง", "id": "Q178"}];
-const ROUND_SIZE = 20;
-let round = [];
-let pos = 0;
-let score = 0;
-let streak = 0;
-let wrongIds = [];
-let wrongThisRound = [];
-let answered = false;
-
-const $ = id => document.getElementById(id);
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i=a.length-1;i>0;i--) {
-    const j = Math.floor(Math.random()*(i+1));
-    [a[i],a[j]] = [a[j],a[i]];
-  }
-  return a;
-}
-
-function cleanText(s) {
-  return String(s).replace(/\n/g, "<br>");
-}
-
-function getRecentIds() {
-  try { return JSON.parse(localStorage.getItem("ch3ch4_recent") || "[]"); }
-  catch { return []; }
-}
-function saveRecent(ids) {
-  localStorage.setItem("ch3ch4_recent", JSON.stringify(ids.slice(-60)));
-}
-
-function makeRound() {
-  const recent = new Set(getRecentIds());
-  let candidates = shuffle(BANK.filter(q => !recent.has(q.id)));
-  if (candidates.length < ROUND_SIZE) candidates = shuffle(BANK);
-  round = candidates.slice(0, ROUND_SIZE);
-  saveRecent([...getRecentIds(), ...round.map(q => q.id)]);
-  pos = 0; score = 0; streak = 0; wrongThisRound = [];
-  $("result").classList.remove("show");
-  $("quizCard").style.display = "block";
-  $("stats").style.display = "flex";
-  render();
-}
-
-
-// Pinyin dictionary covering the vocabulary, activities, phrases, and sentences
-// used in this quiz.
-const PINYIN = {
-  "会":"huì","游泳":"yóuyǒng","一点儿":"yìdiǎnr","也":"yě","那":"nà","运动":"yùndòng",
-  "打":"dǎ","篮球":"lánqiú","网球":"wǎngqiú","棒球":"bàngqiú","排球":"páiqiú","足球":"zúqiú",
-  "乒乓球":"pīngpāng qiú","羽毛球":"yǔmáoqiú","滑雪":"huáxuě","滑冰":"huábīng",
-  "弹钢琴":"tán gāngqín","弹":"tán","钢琴":"gāngqín","日语":"rìyǔ","跳":"tiào",
-  "芭蕾舞":"bālěiwǔ","开车":"kāichē","好吃":"hǎochī","做菜":"zuò cài","知道":"zhīdào",
-  "想":"xiǎng","不想":"bù xiǎng","吃":"chī","喝":"hē","可乐":"kělè","饼干":"bǐnggān",
-  "牛奶":"niúnǎi","看电影":"kàn diànyǐng","听音乐":"tīng yīnyuè","口渴":"kǒu kě",
-  "甜的":"tián de","辣的":"là de","酸的":"suān de","苦的":"kǔ de","油腻的":"yóunì de",
-  "的":"de","中文":"Zhōngwén","歌":"gē","说":"shuō","汉语":"Hànyǔ","妈妈":"māma",
-  "我":"wǒ","你":"nǐ","这":"zhè","是":"shì","谁":"shéi",
-  "我会打篮球。":"Wǒ huì dǎ lánqiú.",
-  "我一点儿也不会做饭。":"Wǒ yìdiǎnr yě bú huì zuòfàn.",
-  "我想喝可乐。":"Wǒ xiǎng hē kělè.",
-  "我想喝牛奶。":"Wǒ xiǎng hē niúnǎi.",
-  "我想听音乐。":"Wǒ xiǎng tīng yīnyuè.",
-  "我不想吃饼干。":"Wǒ bù xiǎng chī bǐnggān.",
-  "我不想吃甜的。":"Wǒ bù xiǎng chī tián de.",
-  "这是谁的？":"Zhè shì shéi de?",
-  "这是我的。":"Zhè shì wǒ de.",
-  "这是我妈妈的。":"Zhè shì wǒ māma de.",
-  "我口渴。":"Wǒ kǒu kě.",
-  "一点儿也不会":"yìdiǎnr yě bú huì",
-  "一点儿也不知道":"yìdiǎnr yě bù zhīdào",
-  "一点儿也不好吃":"yìdiǎnr yě bù hǎochī",
-  "你会游泳吗？":"Nǐ huì yóuyǒng ma?",
-  "你会不会游泳？":"Nǐ huì bú huì yóuyǒng?",
-  "你会什么运动？":"Nǐ huì shénme yùndòng?",
-  "那你会什么运动？":"Nà nǐ huì shénme yùndòng?",
-  "你会不会唱中文歌？":"Nǐ huì bú huì chàng Zhōngwén gē?",
-  "我不会游泳。":"Wǒ bú huì yóuyǒng.",
-  "我不喜欢吃甜的。":"Wǒ bù xǐhuan chī tián de.",
-  "我想看电影。":"Wǒ xiǎng kàn diànyǐng.",
-  "我不想看电影。":"Wǒ bù xiǎng kàn diànyǐng.",
-  "我喜欢吃甜的。":"Wǒ xǐhuan chī tián de."
-};
-
-const PY_KEYS = Object.keys(PINYIN).sort((a,b)=>b.length-a.length);
-
-function pinyinFor(text){
-  if (!text) return "";
-  const exact = PINYIN[text.trim()];
-  if (exact) return exact;
-
-  let out = text;
-  for (const zh of PY_KEYS) {
-    if (out.includes(zh) && zh.length > 1) {
-      out = out.split(zh).join(`⟦${PINYIN[zh]}⟧`);
-    }
-  }
-  // For remaining single Chinese characters, use dictionary values.
-  for (const zh of PY_KEYS) {
-    if (zh.length === 1 && PINYIN[zh]) {
-      out = out.split(zh).join(`⟦${PINYIN[zh]}⟧`);
-    }
-  }
-  if (!out.includes("⟦")) return "";
-  return out.replace(/⟦/g,"").replace(/⟧/g,"");
-}
-
-function containsChinese(text){
-  return /[\\u3400-\\u9fff]/.test(text || "");
-}
-
-function questionWithPinyin(text){
-  const cleaned = cleanText(text);
-  if (!containsChinese(text)) return cleaned;
-  const py = pinyinFor(text);
-  return `${cleaned}${py ? `<div class="pinyin">Pinyin: ${cleanText(py)}</div>` : ""}`;
-}
-
-function choiceWithPinyin(text){
-  const cleaned = cleanText(text);
-  if (!containsChinese(text)) return cleaned;
-  const py = pinyinFor(text);
-  return `<div class="choice-zh">${cleaned}</div>${py ? `<div class="choice-py">Pinyin: ${cleanText(py)}</div>` : ""}`;
-}
-
-function render() {
-  const q = round[pos];
-  answered = false;
-  $("countPill").textContent = `ข้อ ${pos+1} / ${ROUND_SIZE}`;
-  $("scorePill").textContent = `คะแนน ${score}`;
-  $("streakPill").textContent = `🔥 ${streak}`;
-  $("progressBar").style.width = `${((pos)/ROUND_SIZE)*100}%`;
-
-  let mode = "เลือกคำตอบ";
-  if (q.type.includes("th-zh")) mode = "🇹🇭 ไทย → 🇨🇳 เลือกภาษาจีน";
-  else if (q.type.includes("zh-th")) mode = "🇨🇳 จีน → 🇹🇭 เลือกภาษาไทย";
-  else if (q.type === "translation") mode = "📝 แปล / เลือกคำตอบ";
-  else if (q.type === "ordering") mode = "🔀 เรียงประโยค";
-  else if (q.type === "ownership") mode = "👤 ความเป็นเจ้าของ 的";
-  else if (q.type === "grammar") mode = "📚 ไวยากรณ์";
-
-  $("mode").textContent = `${mode}  •  ${q.chapter}`;
-
-  // Show Pinyin whenever the question itself contains Chinese.
-  const qHtml = questionWithPinyin(q.q);
-  $("question").innerHTML = qHtml;
-  $("sub").textContent = q.sub;
-
-  const choices = $("choices");
-  choices.innerHTML = "";
-  shuffle(q.choices).forEach(choice => {
-    const b = document.createElement("button");
-    b.className = "choice";
-    b.innerHTML = choiceWithPinyin(choice);
-    b.onclick = () => choose(b, choice === q.answer, q);
-    choices.appendChild(b);
-  });
-
-  $("feedback").className = "feedback";
-  $("feedback").innerHTML = "";
-  $("nextBtn").className = "btn primary next";
-  $("nextBtn").textContent = pos === ROUND_SIZE-1 ? "ดูคะแนน" : "ข้อถัดไป →";
-}
-
-function choose(btn, ok, q) {
-  if (answered) return;
-  answered = true;
-  document.querySelectorAll(".choice").forEach(x => x.disabled = true);
-
-  if (ok) {
-    btn.classList.add("correct");
-    score++;
-    streak++;
-    $("feedback").className = "feedback show ok";
-    $("feedback").innerHTML = `✅ ถูกต้อง!<br><b>${cleanText(q.explain)}</b>`;
-  } else {
-    btn.classList.add("wrong");
-    streak = 0;
-    wrongThisRound.push(q.id);
-    if (!wrongIds.includes(q.id)) wrongIds.push(q.id);
-    document.querySelectorAll(".choice").forEach(x => {
-      if (x.textContent.trim().replace(/\s+/g," ") === String(q.answer).trim().replace(/\s+/g," ")) {
-        x.classList.add("correct");
-      }
-    });
-    $("feedback").className = "feedback show no";
-    $("feedback").innerHTML = `❌ ยังไม่ถูก<br>คำตอบที่ถูกคือ <b>${cleanText(q.answer)}</b><br>${cleanText(q.explain)}`;
-  }
-
-  $("scorePill").textContent = `คะแนน ${score}`;
-  $("streakPill").textContent = `🔥 ${streak}`;
-  $("nextBtn").className = "btn primary next show";
-}
-
-function next() {
-  if (pos >= ROUND_SIZE-1) {
-    finish();
-  } else {
-    pos++;
-    render();
-  }
-}
-
-function finish() {
-  $("quizCard").style.display = "none";
-  $("stats").style.display = "none";
-  $("result").classList.add("show");
-  $("progressBar").style.width = "100%";
-  $("finalScore").textContent = `${score} / ${ROUND_SIZE}`;
-  $("correctCount").textContent = score;
-  $("wrongCount").textContent = ROUND_SIZE-score;
-  $("pctCount").textContent = `${Math.round(score/ROUND_SIZE*100)}%`;
-
-  const pct = Math.round(score/ROUND_SIZE*100);
-  $("finalMsg").textContent =
-    pct >= 90 ? "🔥 เยี่ยมมาก รอบนี้แม่นสุด ๆ" :
-    pct >= 75 ? "👍 ดีมาก เหลือเก็บจุดพลาดอีกนิด" :
-    pct >= 60 ? "💪 ผ่านได้ แต่ควรย้ำศัพท์กับไวยากรณ์อีกหน่อย" :
-    "🧠 รอบนี้ใช้เป็นจุดเช็กได้เลย ลองสุ่มชุดใหม่และดูเฉลยหลังตอบให้ครบ";
-}
-
-function retryWrong() {
-  const set = BANK.filter(q => wrongIds.includes(q.id));
-  if (!set.length) {
-    alert("ตอนนี้ยังไม่มีข้อที่พลาดจากรอบก่อน");
-    return;
-  }
-  const picked = shuffle(set).slice(0, ROUND_SIZE);
-  round = picked.length < ROUND_SIZE
-    ? shuffle([...picked, ...shuffle(BANK.filter(q => !picked.includes(q)))].slice(0, ROUND_SIZE))
-    : picked;
-  pos=0; score=0; streak=0; wrongThisRound=[];
-  $("result").classList.remove("show");
-  $("quizCard").style.display="block";
-  $("stats").style.display="flex";
-  render();
-}
-
-function resetHistory() {
-  localStorage.removeItem("ch3ch4_recent");
-  alert("ล้างประวัติการสุ่มแล้ว");
-}
-
-$("newRound").onclick = makeRound;
-$("nextRoundBtn").onclick = makeRound;
-$("retryWrong").onclick = retryWrong;
-$("resetHistory").onclick = resetHistory;
-$("nextBtn").onclick = next;
-
-makeRound();
-</script>
-</body>
-</html>
+const V=[
+['会','huì','เป็น / สามารถ'],['游泳','yóuyǒng','ว่ายน้ำ'],['一点儿','yìdiǎnr','นิดหน่อย'],['也','yě','ก็ / ด้วย'],['那','nà','งั้น / ถ้างั้น'],['运动','yùndòng','กีฬา'],['打','dǎ','เล่น / ตี'],['篮球','lánqiú','บาสเกตบอล'],['网球','wǎngqiú','เทนนิส'],['棒球','bàngqiú','เบสบอล'],['排球','páiqiú','วอลเลย์บอล'],['足球','zúqiú','ฟุตบอล'],['乒乓球','pīngpāng qiú','ปิงปอง'],['羽毛球','yǔmáoqiú','แบดมินตัน'],['滑雪','huáxuě','เล่นสกี'],['滑冰','huábīng','เล่นสเกตน้ำแข็ง'],['开车','kāichē','ขับรถ'],['做菜','zuò cài','ทำอาหาร'],['弹钢琴','tán gāngqín','เล่นเปียโน'],['日语','rìyǔ','ภาษาญี่ปุ่น'],['跳','tiào','กระโดด / เต้น'],['芭蕾舞','bālěiwǔ','บัลเลต์'],['好吃','hǎochī','อร่อย'],['知道','zhīdào','รู้'],
+['想','xiǎng','อยาก'],['不想','bù xiǎng','ไม่อยาก'],['吃','chī','กิน'],['喝','hē','ดื่ม'],['可乐','kělè','โคล่า'],['饼干','bǐnggān','คุกกี้'],['牛奶','niúnǎi','นม'],['看电影','kàn diànyǐng','ดูหนัง'],['听音乐','tīng yīnyuè','ฟังเพลง'],['口渴','kǒu kě','กระหายน้ำ'],['甜的','tián de','ของหวาน / สิ่งที่หวาน'],['辣的','là de','ของเผ็ด'],['酸的','suān de','ของเปรี้ยว'],['苦的','kǔ de','ของขม'],['油腻的','yóunì de','ของมัน / เลี่ยน'],['的','de','ของ... / แสดงความเป็นเจ้าของ']
+].map(x=>({zh:x[0],py:x[1],th:x[2]}));
+const P=[
+['打篮球','dǎ lánqiú','เล่นบาสเกตบอล'],['打网球','dǎ wǎngqiú','เล่นเทนนิส'],['打棒球','dǎ bàngqiú','เล่นเบสบอล'],['打排球','dǎ páiqiú','เล่นวอลเลย์บอล'],['打乒乓球','dǎ pīngpāng qiú','เล่นปิงปอง'],['打羽毛球','dǎ yǔmáoqiú','เล่นแบดมินตัน'],['踢足球','tī zúqiú','เล่นฟุตบอล'],['弹钢琴','tán gāngqín','เล่นเปียโน'],['跳芭蕾舞','tiào bālěiwǔ','เต้นบัลเลต์'],['一点儿也不会','yìdiǎnr yě bú huì','ไม่เป็นเลย'],['一点儿也不知道','yìdiǎnr yě bù zhīdào','ไม่รู้เลย'],['一点儿也不好吃','yìdiǎnr yě bù hǎochī','ไม่อร่อยเลย'],['你会不会游泳？','Nǐ huì bú huì yóuyǒng?','คุณว่ายน้ำเป็นไหม?'],['你会游泳吗？','Nǐ huì yóuyǒng ma?','คุณว่ายน้ำเป็นไหม?'],['那你会什么运动？','Nà nǐ huì shénme yùndòng?','งั้นคุณเล่นกีฬาอะไรเป็น?'],['我会打篮球。','Wǒ huì dǎ lánqiú.','ฉันเล่นบาสเป็น'],['我想喝可乐。','Wǒ xiǎng hē kělè.','ฉันอยากดื่มโคล่า'],['我想喝牛奶。','Wǒ xiǎng hē niúnǎi.','ฉันอยากดื่มนม'],['我想听音乐。','Wǒ xiǎng tīng yīnyuè.','ฉันอยากฟังเพลง'],['我不想吃饼干。','Wǒ bù xiǎng chī bǐnggān.','ฉันไม่อยากกินคุกกี้'],['我不想吃甜的。','Wǒ bù xiǎng chī tián de.','ฉันไม่อยากกินของหวาน'],['这是谁的？','Zhè shì shéi de?','นี่คือของใคร?'],['这是我的。','Zhè shì wǒ de.','นี่คือของฉัน'],['这是我妈妈的。','Zhè shì wǒ māma de.','นี่คือของแม่ฉัน']
+].map(x=>({zh:x[0],py:x[1],th:x[2]}));
+const BANK=[...V,...P]; let qs=[],idx=0,score=0,streak=0,answered=false,modeCount=20;
+function sh(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function build(n){const base=sh(BANK).slice(0,Math.min(n,BANK.length));qs=base.map((it,i)=>{let dir=i%2===0?'th-zh':'zh-th';let ds=sh(BANK.filter(x=>x.zh!==it.zh)).slice(0,3);let opts=sh([it,...ds]);return{it,dir,opts}})}
+function start(n){modeCount=n;idx=0;score=0;streak=0;answered=false;build(n);document.getElementById('status').style.display='flex';document.getElementById('quiz').style.display='block';document.getElementById('result').classList.remove('show');render()}
+function render(){const q=qs[idx];answered=false;document.getElementById('counter').textContent=`ข้อ ${idx+1} / ${qs.length}`;document.getElementById('score').textContent=`คะแนน ${score}`;document.getElementById('streak').textContent=`🔥 ${streak}`;document.getElementById('mode').textContent=q.dir==='th-zh'?'ไทย → เลือกภาษาจีน':'จีน → เลือกภาษาไทย';document.getElementById('question').textContent=q.dir==='th-zh'?q.it.th:q.it.zh;document.getElementById('promptPy').textContent=q.dir==='th-zh'?'เลือกคำภาษาจีนที่ตรงกับความหมาย':`Pinyin: ${q.it.py}`;const box=document.getElementById('choices');box.innerHTML='';q.opts.forEach(o=>{const b=document.createElement('button');b.className='choice';b.innerHTML=q.dir==='th-zh'?`<div style="font-size:20px;font-weight:800">${o.zh}</div><div style="color:#667085;font-size:13px">${o.py}</div>`:`<div style="font-size:17px;font-weight:700">${o.th}</div>`;b.onclick=()=>choose(b,o.zh===q.it.zh,q.it,q.dir);box.appendChild(b)});const f=document.getElementById('feedback');f.className='feedback';f.innerHTML='';const nxt=document.getElementById('next');nxt.className='btn primary next';nxt.textContent=idx===qs.length-1?'ดูผลคะแนน':'ข้อถัดไป →'}
+function choose(btn,ok,it,dir){if(answered)return;answered=true;document.querySelectorAll('.choice').forEach(x=>x.disabled=true);if(ok){btn.classList.add('correct');score++;streak++;show(true,`✅ ถูกต้อง! <b>${it.zh}</b> — <b>${it.py}</b> — ${it.th}`)}else{btn.classList.add('wrong');streak=0;document.querySelectorAll('.choice').forEach(x=>{let t=x.innerText.trim();if((dir==='th-zh'&&t.startsWith(it.zh))||(dir==='zh-th'&&t===it.th))x.classList.add('correct')});show(false,`❌ คำตอบคือ <b>${it.zh}</b> (<b>${it.py}</b>) = ${it.th}`)}document.getElementById('score').textContent=`คะแนน ${score}`;document.getElementById('streak').textContent=`🔥 ${streak}`;document.getElementById('next').className='btn primary next show'}
+function show(ok,html){const f=document.getElementById('feedback');f.className='feedback show '+(ok?'ok':'no');f.innerHTML=html}
+document.getElementById('next').onclick=()=>{idx++;if(idx>=qs.length)finish();else render()}
+function finish(){document.getElementById('quiz').style.display='none';document.getElementById('status').style.display='none';document.getElementById('result').classList.add('show');let p=Math.round(score/qs.length*100);document.getElementById('finalScore').textContent=`${score} / ${qs.length}`;document.getElementById('finalText').textContent=p>=90?'โหดมาก 🔥':p>=75?'ดีมาก 👍':p>=60?'ใช้ได้ 💪':'ลองอีกสักรอบ จะจำได้แม่นขึ้น 🧠'}
+start(20);
+</script></body></html>
